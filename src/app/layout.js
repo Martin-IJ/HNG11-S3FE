@@ -2,6 +2,7 @@ import { Lato } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { CartProvider } from "@/context/CartContext";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -12,19 +13,20 @@ const lato = Lato({
 
 export const metadata = {
   title: "Shapel Beauty Shop",
-  description:
-    "Shapel Beauty Shop, your go-to destination for premium beauty products.",
+  description: "Shapel Beauty Shop, your go-to destination for premium beauty products.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={lato.className}>
-        <main className="bg-primary-light text-tertiary font-lato">
-          <Navbar />
-          {children}
-          <Footer />
-        </main>
+        <CartProvider>
+          <main className="bg-primary-light text-tertiary font-lato">
+            <Navbar />
+            {children}
+            <Footer />
+          </main>
+        </CartProvider>
       </body>
     </html>
   );

@@ -1,18 +1,19 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { FaRegHeart } from "react-icons/fa";
-import { FaRegUser, FaAngleDown } from "react-icons/fa6";
+import { FaRegHeart, FaRegUser, FaAngleDown } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoSearch } from "react-icons/io5";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
 import Cart from "./Cart";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const [cartVisible, setCartVisible] = useState(false);
   const cartRef = useRef(null);
+  const { cart } = useCart();
 
   const toggleCart = () => {
     setCartVisible(!cartVisible);
@@ -72,7 +73,7 @@ const Navbar = () => {
               <div className="flex items-center">
                 <MdOutlineShoppingCart />
                 <div className="h-[15px] w-[15px] flex items-center justify-center text-[8px] bg-secondary-extraLight rounded-full">
-                  0
+                  {cart.length}
                 </div>
               </div>
             </Link>
@@ -89,13 +90,13 @@ const Navbar = () => {
             <button className="flex items-center" onClick={toggleCart}>
               <MdOutlineShoppingCart />
               <span className="h-[15px] w-[15px] flex items-center justify-center text-[8px] bg-secondary-extraLight rounded-full">
-                0
+                {cart.length}
               </span>
             </button>
             {cartVisible && (
               <div
                 ref={cartRef}
-                className="absolute top-[5.7rem] right-0 w-[520px] h-[550px] bg-white border border-secondary-extraLight shadow-lg"
+                className="absolute top-[5.7rem] right-0 z-50 bg-white border border-secondary-extraLight shadow-lg"
               >
                 <Cart onClose={() => setCartVisible(false)} />
               </div>

@@ -1,73 +1,53 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { LiaTimesSolid } from "react-icons/lia";
 import Image from "next/image";
 import Link from "next/link";
+import { useCart } from "../../context/CartContext";
 
 const MobileCart = () => {
-  const initialProducts = [
-    {
-      id: 1,
-      name: "Olay Vitamin C Brightening Body Lotion 502ML",
-      price: 33000,
-      count: 1,
-    },
-    {
-      id: 2,
-      name: "Olay Vitamin C Brightening Body Lotion 502ML",
-      price: 33000,
-      count: 1,
-    },
-  ];
-
-  const [products, setProducts] = useState(initialProducts);
+  const { cart, dispatch } = useCart();
 
   const increaseCount = (id) => {
-    setProducts(
-      products.map((product) =>
-        product.id === id ? { ...product, count: product.count + 1 } : product
-      )
-    );
+    dispatch({ type: 'INCREASE_QUANTITY', id });
   };
 
   const decreaseCount = (id) => {
-    setProducts(
-      products.map((product) =>
-        product.id === id
-          ? { ...product, count: product.count > 1 ? product.count - 1 : 1 }
-          : product
-      )
-    );
+    dispatch({ type: 'DECREASE_QUANTITY', id });
   };
 
   const removeProduct = (id) => {
-    setProducts(products.filter((product) => product.id !== id));
+    dispatch({ type: 'REMOVE_FROM_CART', id });
   };
 
-  const subtotal = products.reduce(
-    (total, product) => total + product.price * product.count,
+  const subtotal = cart.reduce(
+    (total, product) => total + (product.price || 0) * product.count,
     0
   );
 
   return (
-    <div className="p-5 ">
-      <div className="h-[60vh] divide-y divide-black/20">
+    <div className="p-5">
+      <div className="h-[60vh] overflow-y-auto divide-y divide-black/20">
         <div className="flex items-center justify-between pb-5 px-3">
           <p className="h8 font-semibold">
-            SHOPPING BAG <sup>{products.length}</sup>
+            SHOPPING BAG <sup>{cart.length}</sup>
           </p>
-          <FaArrowRightLong />
+          <Link href="/checkout">
+            <button>
+              <FaArrowRightLong />
+            </button>
+          </Link>
         </div>
 
-        {products.map((product) => (
+        {cart.map((product) => (
           <div key={product.id} className="flex gap-10 justify-between py-5">
             <Image
               width={100}
               height={100}
               src="/images/cart product.svg"
-              alt=""
+              alt={product.name}
               className="h-24"
             />
             <div className="flex flex-col justify-between">
@@ -85,7 +65,9 @@ const MobileCart = () => {
                   <p>{product.count}</p>
                   <button onClick={() => increaseCount(product.id)}>+</button>
                 </div>
-                <p className="h9">₦{product.price}</p>
+                <p className="h9">
+                  ₦{product.price ? product.price.toLocaleString() : "N/A"}
+                </p>
               </div>
             </div>
             <button
@@ -102,13 +84,13 @@ const MobileCart = () => {
         <div className="px-3">
           <div className="flex justify-between">
             <p className="h8">
-              SUBTOTAL: <sup>{products.length}</sup>
+              SUBTOTAL: <sup>{cart.length}</sup>
             </p>
             <p className="h8">₦{subtotal.toLocaleString()}</p>
           </div>
           <p className="h10">
-            <sup>{products.length}</sup>{" "}
-            <span className=" underline">Have a Coupon?</span>
+            <sup>{cart.length}</sup>{" "}
+            <span className="underline">Have a Coupon?</span>
           </p>
         </div>
 
